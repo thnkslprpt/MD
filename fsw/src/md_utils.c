@@ -35,21 +35,9 @@ extern MD_AppData_t MD_AppData;
 
 bool MD_TableIsInMask(int16 TableId, uint16 TableMask)
 {
-    uint16 LocalMask = TableMask;
-    bool   Status    = false;
-
-    /* Shift TableId - 1 times */
-    if (TableId - 1)
-    {
-        LocalMask = LocalMask >> (TableId - 1);
-    }
-
     /* If result is odd, */
     /* then table is in mask. */
-    if ((LocalMask & (uint16)1) == (uint16)1)
-        Status = true;
-
-    return Status;
+    return (TableMask >> (TableId - 1)) & 1;
 }
 
 /******************************************************************************/

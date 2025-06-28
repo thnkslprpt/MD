@@ -327,7 +327,7 @@ CFE_Status_t MD_InitTableServices(void)
     CFE_Status_t         Status           = CFE_SUCCESS;
     int32                GetAddressResult = 0;
     uint8                TblIndex;
-    bool                 RecoveredValidTable = true; /* for current table */
+    bool                 RecoveredValidTable; /* for current table */
     bool                 TableInitValidFlag  = true; /* for all tables so far*/
     MD_DwellTableLoad_t *MD_LoadTablePtr     = NULL;
     uint16               TblRecos            = 0; /* Number of Tables Recovered */
@@ -339,7 +339,7 @@ CFE_Status_t MD_InitTableServices(void)
     ** Otherwise, load initial data.
     */
 
-    for (TblIndex = 0; (TblIndex < MD_NUM_DWELL_TABLES) && (TableInitValidFlag == true); TblIndex++)
+    for (TblIndex = 0; (TblIndex < MD_NUM_DWELL_TABLES) && TableInitValidFlag; TblIndex++)
     {
         RecoveredValidTable = false;
 
@@ -443,13 +443,12 @@ CFE_Status_t MD_InitTableServices(void)
         else
         {
             /* Table is registered and valid */
-            TableInitValidFlag = true;
         }
 
         /*
         ** Load initial values if needed
         */
-        if ((RecoveredValidTable == false) && (TableInitValidFlag == true))
+        if ((RecoveredValidTable == false) && TableInitValidFlag)
         {
             Status =
                 CFE_TBL_Load(MD_AppData.MD_TableHandle[TblIndex], CFE_TBL_SRC_FILE, /*  following ptr is memory ptr */
@@ -469,7 +468,7 @@ CFE_Status_t MD_InitTableServices(void)
             }
         }
 
-        if (TableInitValidFlag == true)
+        if (TableInitValidFlag)
         {
             /* Update Dwell Table Control Info, including rate */
             MD_UpdateDwellControlInfo(TblIndex);
@@ -481,7 +480,7 @@ CFE_Status_t MD_InitTableServices(void)
     CFE_EVS_SendEvent(MD_TBL_INIT_INF_EID, CFE_EVS_EventType_INFORMATION,
                       "Dwell Tables Recovered: %u, Dwell Tables Initialized: %u", TblRecos, TblInits);
 
-    if (TableInitValidFlag == true)
+    if (TableInitValidFlag)
     {
         return CFE_SUCCESS;
     }

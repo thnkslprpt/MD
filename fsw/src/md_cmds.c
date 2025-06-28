@@ -59,6 +59,7 @@ void MD_ProcessStartCmd(const CFE_SB_Buffer_t *BufPtr)
         {
             /* At least one valid Table Id is in Mask */
             AnyTablesInMask = true;
+            break;
         }
     }
 
@@ -137,7 +138,6 @@ void MD_ProcessStopCmd(const CFE_SB_Buffer_t *BufPtr)
     MD_CmdStartStop_t *Stop         = (MD_CmdStartStop_t *)BufPtr;
     uint16             TableId      = 0;
     uint16             TableIndex;
-    bool               AnyTablesInMask = false;
 
     for (TableId = 1; TableId <= MD_NUM_DWELL_TABLES; TableId++)
     {
@@ -150,8 +150,6 @@ void MD_ProcessStopCmd(const CFE_SB_Buffer_t *BufPtr)
             MD_AppData.MD_DwellTables[TableIndex].CurrentEntry = 0;
             MD_AppData.MD_DwellTables[TableIndex].PktOffset    = 0;
 
-            AnyTablesInMask = true;
-
             /* Change value in Table Services managed buffer */
             Status = MD_UpdateTableEnabledField(TableIndex, MD_DWELL_STREAM_DISABLED);
             if (Status != CFE_SUCCESS)
@@ -161,7 +159,7 @@ void MD_ProcessStopCmd(const CFE_SB_Buffer_t *BufPtr)
         }
     }
 
-    if (AnyTablesInMask)
+    if (NumTblInMask > 0)
     {
         if (ErrorCount == 0)
         {
@@ -232,15 +230,11 @@ void MD_ProcessJamCmd(const CFE_SB_Buffer_t *BufPtr)
 
         AllInputsValid = false;
     }
-    else
-    {
-        AllInputsValid = true;
-    }
 
     /*
     **  If all inputs checked so far are valid, continue.
     */
-    if (AllInputsValid == true)
+    if (AllInputsValid)
     {
         TableIndex = Jam->Payload.TableId - 1;
         EntryIndex = Jam->Payload.EntryId - 1;
@@ -337,13 +331,8 @@ void MD_ProcessJamCmd(const CFE_SB_Buffer_t *BufPtr)
                                   (unsigned int)ResolvedAddr);
                 AllInputsValid = false;
             }
-            else
-            {
-                /* All inputs are valid */
-                AllInputsValid = true;
-            }
 
-            if (AllInputsValid == true)
+            if (AllInputsValid)
             /*
             ** Perform Jam Operation : Copy Resolved DwellAddress, Length, and Delay to
             ** local control structure.
@@ -387,7 +376,7 @@ void MD_ProcessJamCmd(const CFE_SB_Buffer_t *BufPtr)
     /*
     **  Handle bookkeeping.
     */
-    if (AllInputsValid == true)
+    if (AllInputsValid)
     {
         MD_AppData.CmdCounter++;
 

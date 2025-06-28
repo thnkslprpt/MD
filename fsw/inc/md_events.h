@@ -148,7 +148,7 @@
  *
  *  \par Cause:
  *
- *  Issued upon receipt of a Memory Dwell Start command.
+ *  Issued upon receipt of a Memory Dwell Stop command.
  *  Upon receipt of this command, the specified tables are stopped.
  */
 #define MD_STOP_DWELL_INF_EID 13
