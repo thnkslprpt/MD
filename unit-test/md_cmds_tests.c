@@ -103,9 +103,11 @@ void MD_ProcessStartCmd_Test_ZeroRate(void)
     UT_SetHookFunction(UT_KEY(CFE_TBL_GetAddress), &MD_CMDS_TEST_CFE_TBL_GetAddressHook, NULL);
 
     /* Only process one entry per table processing loop */
+    /* First call in preview loop returns true, then break */
     UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 1, true);
-    UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 3, false);
+    /* Processing loop: first call returns true for table 1 */
     UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 1, true);
+    /* Processing loop: remaining calls return false for tables 2-4 */
     UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 3, false);
 
     /* Execute the function being tested */
@@ -162,9 +164,11 @@ void MD_ProcessStartCmd_Test_Success(void)
     UT_SetHookFunction(UT_KEY(CFE_TBL_GetAddress), &MD_CMDS_TEST_CFE_TBL_GetAddressHook, NULL);
 
     /* Only process one entry per table processing loop */
+    /* First call in preview loop returns true, then break */
     UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 1, true);
-    UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 3, false);
+    /* Processing loop: first call returns true for table 1 */
     UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 1, true);
+    /* Processing loop: remaining calls return false for tables 2-4 */
     UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 3, false);
 
     /* Execute the function being tested */
@@ -244,9 +248,11 @@ void MD_ProcessStartCmd_Test_NoUpdateTableEnabledField(void)
     UT_SetHookFunction(UT_KEY(CFE_TBL_GetAddress), &MD_CMDS_TEST_CFE_TBL_GetAddressHook, NULL);
 
     /* Only process one entry per table processing loop */
+    /* First call in preview loop returns true, then break */
     UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 1, true);
-    UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 3, false);
+    /* Processing loop: first call returns true for table 1 */
     UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 1, true);
+    /* Processing loop: remaining calls return false for tables 2-4 */
     UT_SetDeferredRetcode(UT_KEY(MD_TableIsInMask), 3, false);
     UT_SetDeferredRetcode(UT_KEY(MD_UpdateTableEnabledField), 1, -1);
 
